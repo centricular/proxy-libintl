@@ -13,15 +13,18 @@ intl_shr = shared_library('intl',
   install : true)
 
 intl_sta = static_library ('intl',
-  objects: intl_shr.extract_all_objects(),
-  c_args: ['-DSTUB_ONLY'],
+  'libintl.c',
+  c_args: ['-DSTUB_ONLY', '-DG_INTL_STATIC_COMPILATION'],
   install : true)
 
+compile_args_export = []
 if get_option('default_library') == 'static'
   intl_lib = intl_sta
+  compile_args_export += '-DG_INTL_STATIC_COMPILATION'
 else
   intl_lib = intl_shr
 endif
 
 intl_dep = declare_dependency(link_with : intl_lib,
+  compile_args: compile_args_export,
   include_directories : include_directories('.'))
